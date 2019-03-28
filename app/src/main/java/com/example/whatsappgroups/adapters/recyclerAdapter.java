@@ -29,6 +29,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ViewHo
 
 public recyclerAdapter(List g){
     groupsList = g;
+    filteredGroups = new ArrayList<>(g);
 }
     @NonNull
     @Override
@@ -72,12 +73,12 @@ public recyclerAdapter(List g){
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
+                List<group> filteredList = new ArrayList<>();
                 String charString = constraint.toString();
-                if(charString.isEmpty()){
-                    filteredGroups = groupsList;
+                if(constraint == null || constraint.length() == 0){
+                    filteredList.addAll(filteredGroups);
                 }else{
-                    List<group> filteredList = new ArrayList<>();
-                    for(group row: groupsList){
+                    for(group row: filteredGroups){
                         //group matching
                         if(row.getGrpName().toLowerCase().contains(charString.toLowerCase())
                                 ||row.getGrpDscp().contains(charString.toLowerCase())){
@@ -85,16 +86,17 @@ public recyclerAdapter(List g){
 
                         }
                     }
-                    filteredGroups = filteredList;
                 }
                 FilterResults filterResults = new FilterResults();
-                filterResults.values = filteredGroups;
+                filterResults.values = filteredList;
                 return filterResults;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-
+                groupsList.clear();
+                groupsList.addAll((List)results.values);
+                notifyDataSetChanged();
             }
         };
     }

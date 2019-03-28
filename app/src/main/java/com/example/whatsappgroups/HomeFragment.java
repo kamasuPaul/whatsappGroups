@@ -7,8 +7,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -42,7 +45,7 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
-    List<group> groupsList;
+     public  List<group> groupsList;
     RecyclerView v;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -54,7 +57,7 @@ public class HomeFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private recyclerAdapter recyViewAdapter;
+    public  recyclerAdapter recyViewAdapter;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -83,14 +86,14 @@ public class HomeFragment extends Fragment {
         groupsList = new ArrayList<>();
         recyViewAdapter = new recyclerAdapter(groupsList);
         groupsList.add(new group("masterJavaprogramming","i love java","kdkdk"));
+        groupsList.add(new group("master ai ","java","kdkdk"));
         fetchDeta("http://whatsappgroups.epizy.com/whatsappgroups/fetch_course_units_from_db.php?");
 //        List<group> d = DataFetcher.fetch(getContext(),"dkkd");
 //        for(group g: d){
 //            groupsList.add(g);
 //        }
         recyViewAdapter.notifyDataSetChanged();//notify achange in data
-
-
+        setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -108,6 +111,28 @@ public class HomeFragment extends Fragment {
 
         return parent;
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_main, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+//        search(searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+//                recyViewAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                recyViewAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+    }
+
     public void fetchDeta(String url){
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET,url,
