@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -84,15 +85,15 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         groupsList = new ArrayList<>();
-        recyViewAdapter = new recyclerAdapter(groupsList);
         groupsList.add(new group("masterJavaprogramming","i love java","kdkdk"));
         groupsList.add(new group("master ai ","java","kdkdk"));
+        recyViewAdapter = new recyclerAdapter(groupsList);
         fetchDeta("http://whatsappgroups.epizy.com/whatsappgroups/fetch_course_units_from_db.php?");
 //        List<group> d = DataFetcher.fetch(getContext(),"dkkd");
 //        for(group g: d){
 //            groupsList.add(g);
 //        }
-        recyViewAdapter.notifyDataSetChanged();//notify achange in data
+//        recyViewAdapter.notifyDataSetChanged();//notify achange in data
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -117,11 +118,12 @@ public class HomeFragment extends Fragment {
 
         inflater.inflate(R.menu.menu_main, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 //        search(searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-//                recyViewAdapter.getFilter().filter(query);
+                recyViewAdapter.getFilter().filter(query);
                 return false;
             }
 

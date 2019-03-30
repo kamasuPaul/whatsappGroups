@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 //                return false;
 //            }
 //        });
-        return true;
+        return false;
     }
     public void search(SearchView searchView){
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -117,12 +117,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         switch (menuItem.getItemId()){
             case R.id.home:
                 loadFragment(new HomeFragment());
+                menuItem.setChecked(true);
                 break;
             case R.id.trending:
                 loadFragment(new TrendingFragment());
+                menuItem.setChecked(true);
                 break;
             case R.id.loved:
                 loadFragment(new LovedFragment());
+                menuItem.setChecked(true);
                 break;
         }
 
