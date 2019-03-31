@@ -1,4 +1,4 @@
-package com.example.whatsappgroups.util;
+package com.softAppsUganda.WhatsappGroups.util;
 
 import android.content.Context;
 import android.widget.Toast;
@@ -9,9 +9,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.whatsappgroups.models.group;
+import com.softAppsUganda.WhatsappGroups.models.group;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 

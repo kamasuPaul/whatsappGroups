@@ -1,10 +1,10 @@
-package com.example.whatsappgroups;
+package com.softAppsUganda.WhatsappGroups;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -15,8 +15,9 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -25,9 +26,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.whatsappgroups.adapters.recyclerAdapter;
-import com.example.whatsappgroups.models.group;
-import com.example.whatsappgroups.util.DataFetcher;
+import com.softAppsUganda.WhatsappGroups.R;
+import com.softAppsUganda.WhatsappGroups.adapters.recyclerAdapter;
+import com.softAppsUganda.WhatsappGroups.models.group;
+import com.softAppsUganda.WhatsappGroups.util.MyWebView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,45 +44,21 @@ import java.util.List;
  * Activities that contain this fragment must implement the
  * {@link HomeFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link HomeFragment#newInstance} factory method to
+ * Use the {@link HomeFragment#} factory method to
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
      public  List<group> groupsList;
     RecyclerView v;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    ProgressBar progressBar;
+    public String URL = "https://groupouts.com/";
     private OnFragmentInteractionListener mListener;
-    public  recyclerAdapter recyViewAdapter;
+    public recyclerAdapter recyViewAdapter;
 
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +66,16 @@ public class HomeFragment extends Fragment {
         groupsList.add(new group("masterJavaprogramming","i love java","kdkdk"));
         groupsList.add(new group("master ai ","java","kdkdk"));
         recyViewAdapter = new recyclerAdapter(groupsList);
-        fetchDeta("http://whatsappgroups.epizy.com/whatsappgroups/fetch_course_units_from_db.php?");
+        recyclerAdapter.ClickListener listener = new recyclerAdapter.ClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                Toast.makeText(getContext(),"hi",Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(),groupsList.get(position).getGrpName(),Toast.LENGTH_SHORT).show();
+            }
+        };
+        recyViewAdapter.setOnItemClickListener(listener);
+            //TODO fetch data from the database properly;
+//        fetchDeta("http://whatsappgroups.epizy.com/whatsappgroups/fetch_course_units_from_db.php?");
 //        List<group> d = DataFetcher.fetch(getContext(),"dkkd");
 //        for(group g: d){
 //            groupsList.add(g);
@@ -96,10 +83,6 @@ public class HomeFragment extends Fragment {
 //        recyViewAdapter.notifyDataSetChanged();//notify achange in data
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -109,7 +92,23 @@ public class HomeFragment extends Fragment {
        v = parent.findViewById(R.id.RecylerViewHome);
         v.setLayoutManager(new LinearLayoutManager(getContext()));
         v.setAdapter(recyViewAdapter);
+        v.setVisibility(View.GONE);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(v.getContext(),
+                DividerItemDecoration.VERTICAL);
+        v.addItemDecoration(dividerItemDecoration);//code for adding dividers but layout manager
+        WebView webView =  parent.findViewById(R.id.webViewHome);
+        progressBar = parent.findViewById(R.id.progressBarHome);
+        progressBar.setVisibility(View.VISIBLE);
 
+
+        // Enable Javascript
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setAppCacheEnabled(true);
+
+        // Force links and redirects to open in the WebView instead of in a browser
+        webView.setWebViewClient(new MyWebView(getContext(),progressBar));
+        webView.loadUrl(URL);
         return parent;
     }
 

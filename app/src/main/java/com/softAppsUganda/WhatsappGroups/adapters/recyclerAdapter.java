@@ -1,9 +1,7 @@
-package com.example.whatsappgroups.adapters;
+package com.softAppsUganda.WhatsappGroups.adapters;
 
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.style.TtsSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,22 +11,21 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
-import com.example.whatsappgroups.MyItemRecyclerViewAdapter;
-import com.example.whatsappgroups.R;
-import com.example.whatsappgroups.models.group;
+import com.softAppsUganda.WhatsappGroups.R;
+import com.softAppsUganda.WhatsappGroups.R;
+import com.softAppsUganda.WhatsappGroups.models.group;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.example.whatsappgroups.HomeFragment.*;
 
 public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ViewHolder>
                                         implements Filterable {
     List<group>groupsList;
     List<group>filteredGroups;
+    public static ClickListener clickListener;
 
 public recyclerAdapter(List g){
     groupsList = g;
@@ -40,6 +37,7 @@ public recyclerAdapter(List g){
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.group_row, viewGroup, false);
         return new recyclerAdapter.ViewHolder(view);
+
     }
 
     @Override
@@ -105,18 +103,38 @@ public recyclerAdapter(List g){
             }
         };
     }
+    public void setOnItemClickListener(ClickListener listener){
+        recyclerAdapter.clickListener = listener;
+    }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
 
         public TextView grpname,grpDescp;
         public ImageView imageView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             grpname = itemView.findViewById(R.id.txtViewGrpName);
             grpDescp = itemView.findViewById(R.id.txtViewDescrition);
             imageView = itemView.findViewById(R.id.group_image);
 
         }
+
+        /**
+         * Called when a view has been clicked.
+         *
+         * @param v The view that was clicked.
+         */
+        @Override
+        public void onClick(View v) {
+            clickListener.onItemClick(getAdapterPosition(),v);
+            //when an item is clicked itemClick of the current listener object is called and it is passed the view position
+            //and the view itself
+        }
+
+    }
+    public interface ClickListener{
+        void onItemClick(int position, View v);
     }
 }

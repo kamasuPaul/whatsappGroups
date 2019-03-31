@@ -1,9 +1,9 @@
-package com.example.whatsappgroups.models;
+package com.softAppsUganda.WhatsappGroups.models;
 
 public class group {
-    String grpName;
-    String grpDscp;
-    String Image;
+    private String grpName;
+    private  String grpDscp;
+    private  String Image;
 
     public group(String grpName, String grpDscp, String image) {
         this.grpName = grpName;
